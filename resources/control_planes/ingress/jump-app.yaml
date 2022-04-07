@@ -1,0 +1,537 @@
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: back-golang
+  name: back-golang
+  namespace: jump-app-dev
+spec:
+  ports:
+    - name: http-8442
+      port: 8442
+      protocol: TCP
+      targetPort: 8442   
+  selector:
+    app: back-golang
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: back-python
+  name: back-python
+  namespace: jump-app-dev
+spec:
+  ports:
+    - name: http-8444
+      port: 8444
+      protocol: TCP
+      targetPort: 8080   
+  selector:
+    app: back-python
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: back-quarkus
+  name: back-quarkus
+  namespace: jump-app-dev
+spec:
+  ports:
+    - name: http-8445
+      port: 8445
+      protocol: TCP
+      targetPort: 8080   
+  selector:
+    app: back-quarkus
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: back-springboot
+  name: back-springboot
+  namespace: jump-app-dev
+spec:
+  ports:
+    - name: http-8443
+      port: 8443
+      protocol: TCP
+      targetPort: 8443   
+  selector:
+    app: back-springboot
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: front-javascript
+  name: front-javascript
+  namespace: jump-app-dev
+spec:
+  ports:
+    - name: http-8080
+      port: 8080
+      protocol: TCP
+      targetPort: 3000   
+  selector:
+    app: front-javascript
+---
+# Source: jump-app/charts/jump-app-micros/templates/jump-app/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: back-golang
+    version: v1
+  name: back-golang-v1
+  namespace: jump-app-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: back-golang
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        name: back-golang-v1
+        app: back-golang
+        version: v1
+    spec:
+      containers:
+      - image: quay.io/acidonpe/jump-app-back-golang:latest
+        imagePullPolicy: Always
+        name: back-golang-v1
+        ports:
+          - containerPort: 8442
+            protocol: TCP
+        resources: {}
+        env:  
+          - name: APP_REF_NAME
+            value: jump-app
+---
+# Source: jump-app/charts/jump-app-micros/templates/jump-app/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: back-python
+    version: v1
+  name: back-python-v1
+  namespace: jump-app-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: back-python
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        name: back-python-v1
+        app: back-python
+        version: v1
+    spec:
+      containers:
+      - image: quay.io/acidonpe/jump-app-back-python:latest
+        imagePullPolicy: Always
+        name: back-python-v1
+        ports:
+          - containerPort: 8080
+            protocol: TCP
+        resources: {}
+        env:  
+          - name: APP_REF_NAME
+            value: jump-app
+---
+# Source: jump-app/charts/jump-app-micros/templates/jump-app/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: back-quarkus
+    version: v1
+  name: back-quarkus-v1
+  namespace: jump-app-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: back-quarkus
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        name: back-quarkus-v1
+        app: back-quarkus
+        version: v1
+    spec:
+      containers:
+      - image: quay.io/acidonpe/jump-app-back-quarkus:latest
+        imagePullPolicy: Always
+        name: back-quarkus-v1
+        ports:
+          - containerPort: 8080
+            protocol: TCP
+        resources: {}
+        env:  
+          - name: APP_REF_NAME
+            value: jump-app
+---
+# Source: jump-app/charts/jump-app-micros/templates/jump-app/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: back-springboot
+    version: v1
+  name: back-springboot-v1
+  namespace: jump-app-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: back-springboot
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        name: back-springboot-v1
+        app: back-springboot
+        version: v1
+    spec:
+      containers:
+      - image: quay.io/acidonpe/jump-app-back-springboot:latest
+        imagePullPolicy: Always
+        name: back-springboot-v1
+        ports:
+          - containerPort: 8443
+            protocol: TCP
+          - containerPort: 8443
+            protocol: TCP
+        resources: {}
+        env:  
+          - name: APP_REF_NAME
+            value: jump-app
+---
+# Source: jump-app/charts/jump-app-micros/templates/jump-app/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: front-javascript
+    version: v1
+  name: front-javascript-v1
+  namespace: jump-app-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: front-javascript
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        name: front-javascript-v1
+        app: front-javascript
+        version: v1
+    spec:
+      containers:
+      - image: quay.io/acidonpe/jump-app-front-javascript:latest
+        imagePullPolicy: Always
+        name: front-javascript-v1
+        ports:
+          - containerPort: 3000
+            protocol: TCP
+        resources: {}
+        env:  
+          - name: APP_REF_NAME
+            value: jump-app
+          - name: REACT_APP_BACK
+            value: https://back-golang-jump-app-dev.apps.test.sandbox1196.opentlc.com/jump
+          - name: REACT_APP_GOLANG
+            value: http://back-golang:8442
+          - name: REACT_APP_PYTHON
+            value: http://back-python:8444
+          - name: REACT_APP_QUARKUS
+            value: http://back-quarkus:8445
+          - name: REACT_APP_SPRINGBOOT
+            value: http://back-springboot:8443
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/destinationrule.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: back-golang
+  namespace: jump-app-dev
+spec:
+  host: back-golang.jump-app-dev.svc.cluster.local
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/destinationrule.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: back-python
+  namespace: jump-app-dev
+spec:
+  host: back-python.jump-app-dev.svc.cluster.local
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/destinationrule.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: back-quarkus
+  namespace: jump-app-dev
+spec:
+  host: back-quarkus.jump-app-dev.svc.cluster.local
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/destinationrule.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: back-springboot
+  namespace: jump-app-dev
+spec:
+  host: back-springboot.jump-app-dev.svc.cluster.local
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/destinationrule.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: front-javascript
+  namespace: jump-app-dev
+spec:
+  host: front-javascript.jump-app-dev.svc.cluster.local
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/destinationrule.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: jump-app-dev-mtls
+  namespace: jump-app-dev
+spec:
+  host: "*.jump-app-dev.svc.cluster.local"
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/gateway.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: back-golang
+  namespace: jump-app-dev
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+      - back-golang-jump-app-dev.apps.test.sandbox1196.opentlc.com
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/gateway.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: front-javascript
+  namespace: jump-app-dev
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+      - front-javascript-jump-app-dev.apps.test.sandbox1196.opentlc.com
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/peerauthentication.yaml
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: jump-app-dev
+spec:
+  mtls:
+    mode: STRICT
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/route.yaml
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: back-golang-jump-app-dev
+  namespace: istio-system
+spec:
+  host: back-golang-jump-app-dev.apps.test.sandbox1196.opentlc.com
+  to:
+    kind: Service
+    name: istio-ingressgateway
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  port:
+    targetPort: http2
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/route.yaml
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: front-javascript-jump-app-dev
+  namespace: istio-system
+spec:
+  host: front-javascript-jump-app-dev.apps.test.sandbox1196.opentlc.com
+  to:
+    kind: Service
+    name: istio-ingressgateway
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  port:
+    targetPort: http2
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/servicemeshmember.yaml
+apiVersion: maistra.io/v1
+kind: ServiceMeshMember
+metadata:
+  name: default
+  namespace: jump-app-dev
+spec:
+  controlPlaneRef:
+    name: mesh-workload
+    namespace: mesh-workload
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/virtualservice.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: back-golang
+  namespace: jump-app-dev
+spec:
+  gateways:
+  - back-golang
+  - mesh
+  hosts:
+  - back-golang-jump-app-dev.apps.test.sandbox1196.opentlc.com
+  - back-golang.jump-app-dev.svc.cluster.local
+  - back-golang
+  http:
+  - route:
+      - destination:
+          host: back-golang.jump-app-dev.svc.cluster.local
+          subset: v1
+        weight: 100
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/virtualservice.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: back-python
+  namespace: jump-app-dev
+spec:
+  gateways:
+  - mesh
+  hosts:
+  - back-python.jump-app-dev.svc.cluster.local
+  - back-python
+  http:
+  - route:
+      - destination:
+          host: back-python.jump-app-dev.svc.cluster.local
+          subset: v1
+        weight: 100
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/virtualservice.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: back-quarkus
+  namespace: jump-app-dev
+spec:
+  gateways:
+  - mesh
+  hosts:
+  - back-quarkus.jump-app-dev.svc.cluster.local
+  - back-quarkus
+  http:
+  - route:
+      - destination:
+          host: back-quarkus.jump-app-dev.svc.cluster.local
+          subset: v1
+        weight: 100
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/virtualservice.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: back-springboot
+  namespace: jump-app-dev
+spec:
+  gateways:
+  - mesh
+  hosts:
+  - back-springboot.jump-app-dev.svc.cluster.local
+  - back-springboot
+  http:
+  - route:
+      - destination:
+          host: back-springboot.jump-app-dev.svc.cluster.local
+          subset: v1
+        weight: 100
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/virtualservice.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: front-javascript
+  namespace: jump-app-dev
+spec:
+  gateways:
+  - front-javascript
+  - mesh
+  hosts:
+  - front-javascript-jump-app-dev.apps.test.sandbox1196.opentlc.com
+  - front-javascript.jump-app-dev.svc.cluster.local
+  - front-javascript
+  http:
+  - route:
+      - destination:
+          host: front-javascript.jump-app-dev.svc.cluster.local
+          subset: v1
+        weight: 100

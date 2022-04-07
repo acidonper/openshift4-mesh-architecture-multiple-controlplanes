@@ -50,6 +50,14 @@ The idea is to make the changes and executes update procedures with the possibil
 
 ![](./images/RHMesh_MCP_HA.png "Red Hat Service Mesh Multiple Control Planes Architecture - HA")
 
+## Setting Up
+
+The technical implementation is based on multiple projects that are included in the following list:
+
+- Red Hat Openshift +4.9 (Kubernetes)
+- Red Hat Service Mesh +2.1 (Istio)
+
+Please visit [Setting Up document](./docs/setting_up.md) for more information about deploying this solution.
 ## Author
 
 Asier Cidon @RedHat
