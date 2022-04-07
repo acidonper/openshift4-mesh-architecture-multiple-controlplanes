@@ -37,7 +37,7 @@ Execute the following procedure to generate the respective certificate.
 - Execute the command and introduce the respective information
 
 ```$bash
-sh resources/scripts/00-generate-ca-cert.sh
+sh resources/scripts/01-generate-ca-cert.sh
 
 Generating RSA private key, 2048 bit long modulus (2 primes)
 ..................+++++
@@ -53,6 +53,9 @@ If you enter '.', the field will be left blank.
 Country Name (2 letter code) [XX]:ES
 ...
 
+ls resources/certs 
+
+ca-cert.pem  ca-key.pem
 ```
 
 ## Install Service Mesh Control Planes
