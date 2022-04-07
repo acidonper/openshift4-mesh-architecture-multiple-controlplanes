@@ -1,0 +1,123 @@
+# Source: jump-app/charts/jump-app-micros/templates/istio/route.yaml
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: back-golang-jump-app-dev
+  namespace: mesh-ingress
+spec:
+  host: back-golang-jump-app-dev.apps.test.sandbox1196.opentlc.com
+  to:
+    kind: Service
+    name: istio-ingressgateway
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  port:
+    targetPort: http2
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/route.yaml
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: front-javascript-jump-app-dev
+  namespace: mesh-ingress
+spec:
+  host: front-javascript-jump-app-dev.apps.test.sandbox1196.opentlc.com
+  to:
+    kind: Service
+    name: istio-ingressgateway
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  port:
+    targetPort: http2
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/gateway.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: back-golang
+  namespace: mesh-ingress
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+      - back-golang-jump-app-dev.apps.test.sandbox1196.opentlc.com
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/gateway.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: front-javascript
+  namespace: mesh-ingress
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+      - front-javascript-jump-app-dev.apps.test.sandbox1196.opentlc.com
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/virtualservice.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: back-golang
+  namespace: mesh-ingress
+spec:
+  gateways:
+  - back-golang
+  hosts:
+  - back-golang-jump-app-dev.apps.test.sandbox1196.opentlc.com
+  http:
+  - route:
+      - destination:
+          host: istio-ingressgateway.mesh-workload.svc.cluster.local
+          port:
+            number: 80
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/virtualservice.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: front-javascript
+  namespace: mesh-ingress
+spec:
+  gateways:
+  - front-javascript
+  hosts:
+  - front-javascript-jump-app-dev.apps.test.sandbox1196.opentlc.com
+  http:
+  - route:
+      - destination:
+          host: istio-ingressgateway.mesh-workload.svc.cluster.local
+          port:
+            number: 80
+        headers:
+          request:
+            set:
+              x-forwarded-proto: http
+              x-forwarded-port: "80"
+---
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: mesh-workload
+  namespace: mesh-ingress
+spec:
+  hosts:
+  - istio-ingressgateway.mesh-workload.svc.cluster.local
+  location: MESH_EXTERNAL
+  ports:
+  - number: 80
+    name: http
+    protocol: HTTP
+  resolution: DNS

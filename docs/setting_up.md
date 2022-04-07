@@ -80,21 +80,20 @@ mesh-ingress    mesh-ingress    10/10   ComponentsReady   ["default"]   2.1.1   
 mesh-workload   mesh-workload   10/10   ComponentsReady   ["default"]   2.1.1     8m2s
 ```
 
-## Deploy _Jump App_ Solution
+## Deploy _Jump App_ Solution (HTTP)
 
 In order to test the global solution, it is required to deploy an application and integrate it into the service mesh. Execute the following procedure to deploy this application and configure all service mesh objects to be able external traffic and internal traffic work correctly.
 
 - Include the required domain for deploying _Jump App_
 
 ```$bash
-sed 's/apps.test.sandbox1196.opentlc.com/<openshift_apps_domain>/g' -i resources/control_planes/workload/jump-app.yaml
+sed 's/apps.test.sandbox1196.opentlc.com/<openshift_apps_domain>/g' -i resources/control_planes/workload/jump-app-http.yaml
 ```
 
 - Deploy _Jump App_ in the respective namespace
 
 ```$bash
-oc project jump-app-dev
-oc apply -f resources/control_planes/workload/jump-app.yaml
+oc apply -f resources/control_planes/workload/jump-app-http.yaml
 ```
 
 - Verify objects created in Openshift
@@ -130,7 +129,25 @@ oc exec back-golang-v1-6d57d5cc57-rpwcq -c back-golang-v1 -- curl -XPOST -H "Con
 
 ```
 
+### Configure Ingress Traffic
 
+- Deploy _Jump App_ ingress objects
+
+```$bash
+oc apply -f resources/control_planes/ingress/jump-app-http.yaml
+```
+
+- Test _Jump App_ application external traffic
+
+```$bash
+curl https://front-javascript-jump-app-dev.apps.test.sandbox1196.opentlc.com -v -k
+```
+
+If the final test is ok, an application is deployed with traffic flow configured between multiples control planes through multiple namespaces (mesh_ingress -> mesh_workload -> jump-app-dev)
+
+### Configure Egress Traffic
+
+WIP
 
 ## Author
 
