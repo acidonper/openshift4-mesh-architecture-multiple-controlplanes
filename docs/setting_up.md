@@ -80,72 +80,21 @@ mesh-ingress    mesh-ingress    10/10   ComponentsReady   ["default"]   2.1.1   
 mesh-workload   mesh-workload   10/10   ComponentsReady   ["default"]   2.1.1     8m2s
 ```
 
-## Deploy _Jump App_ Solution (HTTP)
+## Configure Service Mesh and Deploy the Final Application
 
-In order to test the global solution, it is required to deploy an application and integrate it into the service mesh. Execute the following procedure to deploy this application and configure all service mesh objects to be able external traffic and internal traffic work correctly.
+Regarding the application, _Jump App_ is a microservice-based application designed to emulate an enterprise application complex architecture with multiple components written in different programming languages. This app allows users to configure a set of "jumps" between components in order to generate a continuous traffic flow between the microservices selected. Using the application Frontend written in Javascript, it is possible also define the number of retries and their span of time.
 
-- Include the required domain for deploying _Jump App_
+During the following sections, the Red Hat Service Mesh solution and the application will be configured in different modes in order to allow ingress, internal, and egress traffic through the mesh solution based on multiple control planes.
 
-```$bash
-sed 's/apps.test.sandbox1196.opentlc.com/<openshift_apps_domain>/g' -i resources/control_planes/workload/jump-app-http.yaml
-```
+### Deploy _Jump App_ Solution (Internal HTTP)
 
-- Deploy _Jump App_ in the respective namespace
+This section includes the procedure and resources required to deploy _Jump App_ application and implement a service mesh solution based on HTTP connection between the component into the mesh. 
 
-```$bash
-oc apply -f resources/control_planes/workload/jump-app-http.yaml
-```
+The idea behind this model is to enable HTTPs external connections, the final user will use secure connections to access the cluster, but maintaining internal HTTP connection between the different components deployed in the mesh. This implementation is useful in environments where it is not required to implement a high security level inside the cluster and a high performance solution in terms of communication is required.
 
-- Verify objects created in Openshift
+Please visit [Deploy HTTP Mesh Solution document](./mesh_http.md) for more information about deploying Red Hat Service Mesh behind this model.
 
-```$bash
-oc get all -n jump-app-dev
-NAME                                       READY   STATUS    RESTARTS   AGE
-pod/back-golang-v1-6d57d5cc57-rpwcq        2/2     Running   0          48s
-pod/back-python-v1-76fd9495c5-kcffs        2/2     Running   0          48s
-pod/back-quarkus-v1-75d65c4b7f-wzdsc       2/2     Running   0          47s
-pod/back-springboot-v1-5f6cc67c8f-v44wq    2/2     Running   0          47s
-pod/front-javascript-v1-5bf77b8899-s7d6t   2/2     Running   0          47s
-...
-```
-
-- Test application deployed
-
-```$bash
-oc exec back-golang-v1-6d57d5cc57-rpwcq -c back-golang-v1 -- curl -XPOST -H "Content-type: application/json" -d '{
-    "message": "Hello",
-    "last_path": "/jump",
-    "jump_path": "/jump",
-    "jumps": [
-        "http://back-golang:8442",
-        "http://back-springboot:8443",
-        "http://back-python:8444",
-        "http://back-quarkus:8445"
-    ]
-}' 'localhost:8442/jump'
-
-....
-{"code":200,"message":"/jump - Greetings from Quarkus!"}
-
-```
-
-### Configure Ingress Traffic
-
-- Deploy _Jump App_ ingress objects
-
-```$bash
-oc apply -f resources/control_planes/ingress/jump-app-http.yaml
-```
-
-- Test _Jump App_ application external traffic
-
-```$bash
-curl https://front-javascript-jump-app-dev.apps.test.sandbox1196.opentlc.com -v -k
-```
-
-If the final test is ok, an application is deployed with traffic flow configured between multiples control planes through multiple namespaces (mesh_ingress -> mesh_workload -> jump-app-dev)
-
-### Configure Egress Traffic
+## Deploy _Jump App_ Solution (Internal mTLS)
 
 WIP
 

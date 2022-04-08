@@ -33,9 +33,6 @@ spec:
         deployment:
           replicas: 2
     egress:
-      enabled: true
-      runtime:
-        deployment:
-          replicas: 2
+      enabled: false
     openshiftRoute:
       enabled: false

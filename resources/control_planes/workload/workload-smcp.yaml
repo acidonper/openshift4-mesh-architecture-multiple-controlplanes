@@ -36,3 +36,8 @@ spec:
       enabled: false
     openshiftRoute:
       enabled: false
+  proxy:
+    networking:
+      trafficControl:
+        outbound:
+          policy: REGISTRY_ONLY

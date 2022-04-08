@@ -1,0 +1,30 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: traffic
+  namespace: mesh-egress
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - '*'
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: traffic
+  namespace: mesh-egress
+spec:
+  gateways:
+  - traffic
+  hosts:
+  - www.google.com
+  http:
+  - route:
+      - destination:
+          host: www.google.com

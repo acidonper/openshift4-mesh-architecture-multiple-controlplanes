@@ -101,11 +101,6 @@ spec:
           host: istio-ingressgateway.mesh-workload.svc.cluster.local
           port:
             number: 80
-        headers:
-          request:
-            set:
-              x-forwarded-proto: http
-              x-forwarded-port: "80"
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: ServiceEntry
