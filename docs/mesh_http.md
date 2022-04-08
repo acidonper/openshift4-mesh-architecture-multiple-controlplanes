@@ -86,6 +86,8 @@ curl -H "Content-type: application/json" -d '{
 {"code":200,"message":"/jump - Greetings from Quarkus!"}
 ```
 
+NOTE: It is required to specify the Openshift application domain correctly in the example command
+
 If the final test is ok, an application is deployed with traffic flow configured between multiples control planes through multiple namespaces (mesh_ingress -> mesh_workload -> jump-app-dev)
 
 ## Configure Egress Traffic
