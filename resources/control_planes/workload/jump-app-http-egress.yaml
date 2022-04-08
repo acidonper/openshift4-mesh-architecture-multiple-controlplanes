@@ -1,0 +1,29 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: google
+  namespace: jump-app-dev
+spec:
+  gateways:
+  - mesh
+  hosts:
+  - www.google.com
+  http:
+  - route:
+      - destination:
+          host: istio-ingressgateway.mesh-egress.svc.cluster.local
+---
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: egress
+  namespace: jump-app-dev
+spec:
+  hosts:
+  - istio-ingressgateway.mesh-egress.svc.cluster.local
+  location: MESH_EXTERNAL
+  ports:
+  - number: 80
+    name: http
+    protocol: HTTP
+  resolution: DNS
