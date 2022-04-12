@@ -1,7 +1,35 @@
 # Setting Up Red Hat Service Mesh Multiple Control Planes Architecture
 
-This document tries to collect a set of procedures to deploy and configure multiple control planes based Red Hat Service Mesh solution.
+This page tries to collect basic information and a set of procedures to deploy and configure multiple control planes based Red Hat Service Mesh solution.
 
+It is important to bear in mind that there are included procedures to deploy a couple of different Red Hat Service Mesh solution deployments. One of them is performance oriented and the second one is high security level oriented.
+
+Please review the following sections carefully to understand the different solutions raised.
+
+## Introduction
+
+As is generally known, there are a set of _Istio_ objects required to configure the mesh properties in order to allow the different kinds of flows, or connectivities, into the mesh and deploy the different infrastructure services. 
+
+In terms of deploying the infrastructure services, it is important to take a look at the following elements:
+
+* SMCP (Service Mesh Control Plane) - Defines the configuration to be used during installation (E.g. Gateway definition, service mesh architecture components settings, security configuration, etc).
+* SMMR (Service Mesh Member Roles) - Lists the projects belonging to the control plane. Only projects listed in the ServiceMeshMemberRoll are affected by the control plane.
+* SMM (Service Mesh Member) - Adds a selected project to the ServiceMeshMemberRoll within the control plane project that it references. This resource can be created by service mesh users who don’t have privileges to add members to the ServiceMeshMemberRoll directly.
+
+In order to be able to configure the mesh and the connectivity between the different mesh components, it is important to bear in mind the following elements:
+
+* Gateway - Describes a load balancer operating at the edge of the mesh receiving incoming or outgoing HTTP/TCP connections.
+* Virtual Service - Defines a set of traffic routing rules to apply when a host is addressed. Each routing rule defines matching criteria for traffic of a specific protocol. If the traffic is matched, then it is sent to a named destination service (or subset/version of it) defined in the registry.
+* Destination Rule - Defines policies that apply to traffic intended for a service after routing has occurred. These rules specify configuration for load balancing, connection pool size from the sidecar, and outlier detection settings to detect and evict unhealthy hosts from the load balancing pool.
+* Service Entry - Describes the properties of a service (DNS name, VIPs, ports, protocols, endpoints). These services could be external to the mesh (e.g., web APIs) or mesh-internal services that are not part of the platform’s service registry.
+
+A part of the _Istio_ objects, it is also important to bear in mind that are some Openshift/Kubernetes basics objects as well:
+
+* k8s Deployment - Provides declarative updates for Pods and ReplicaSets.
+* k8s Service - Abstracts the way to expose an application running on a set of Pods as a network service.
+* Openshift Route - Exposes a service at a host name, such as www.example.com, so that external clients can reach it by name.
+
+During the rest of this document, there are multiple sections where are included multiple procedures to install and configure the Red Hat Service Mesh solution. 
 
 ## Install Red Hat Service Mesh Operators
 
@@ -84,11 +112,19 @@ mesh-workload   mesh-workload   10/10   ComponentsReady   ["default"]   2.1.1   
 
 Regarding the application, _Jump App_ is a microservice-based application designed to emulate an enterprise application complex architecture with multiple components written in different programming languages. This app allows users to configure a set of "jumps" between components in order to generate a continuous traffic flow between the microservices selected. Using the application Frontend written in Javascript, it is possible also define the number of retries and their span of time.
 
+From a logical connectivity point of view, the following graph tries to explain the relationship between the objects mentioned before in terms of ingress connectivity:
+
+![](../images/RHMesh_Objects_Ingress_Flow.png "Red Hat Service Mesh Multiple Control Planes - Objects Flow Graph")
+
+Regarding egress connectivity, the following graph tries to display the different steps of a external connection from the mesh:
+
+![](../images/RHMesh_Objects_Egress_Flow.png "Red Hat Service Mesh Multiple Control Planes - Objects Flow Graph")
+
 During the following sections, the Red Hat Service Mesh solution and the application will be configured in different modes in order to allow ingress, internal, and egress traffic through the mesh solution based on multiple control planes.
 
 ### Deploy _Jump App_ Solution (Internal HTTP)
 
-This section includes the procedure and resources required to deploy _Jump App_ application and implement a service mesh solution based on HTTP connection between the component into the mesh. 
+This section includes the procedure and resources required to deploy _Jump App_ application and implement a service mesh solution based on HTTP connections between the component into the mesh. 
 
 The idea behind this model is to enable HTTPs external connections, the final user will use secure connections to access the cluster, but maintaining internal HTTP connection between the different components deployed in the mesh. This implementation is useful in environments where it is not required to implement a high security level inside the cluster and a high performance solution in terms of communication is required.
 
@@ -96,7 +132,13 @@ Please visit [Deploy HTTP Mesh Solution document](./mesh_http.md) for more infor
 
 ## Deploy _Jump App_ Solution (Internal mTLS)
 
-WIP
+This section includes the procedure and resources required to deploy _Jump App_ application and implement a service mesh solution based on mTLS connections between the component into the mesh. 
+
+The idea behind this model is to enable HTTPs external connections, the final user will use secure connections to access the cluster, and maintain internal mTLS connection between the different components deployed in the mesh. 
+
+It is important to bear in mind that this implementation is designed for high security level environments.
+
+Please visit [Deploy mTLS Mesh Solution document](./mesh_mtls.md) for more information about deploying Red Hat Service Mesh behind this model.
 
 ## Author
 

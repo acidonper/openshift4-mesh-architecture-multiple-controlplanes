@@ -1,3 +1,5 @@
+---
+# Source: jump-app/charts/jump-app-micros/templates/istio/gateway.yaml
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
@@ -8,11 +10,16 @@ spec:
     istio: ingressgateway
   servers:
     - port:
-        number: 80
-        name: http
-        protocol: HTTP
+        number: 443
+        name: https
+        protocol: HTTPS
       hosts:
-        - '*'
+      - '*'
+      tls:
+        mode: MUTUAL
+        serverCertificate: /etc/istio/mtls-certs/egress.crt
+        privateKey: /etc/istio/mtls-certs/egress.key
+        caCertificates: /etc/istio/mtls-certs/ca-cert.pem
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService

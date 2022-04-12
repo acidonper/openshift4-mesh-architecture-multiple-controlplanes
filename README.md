@@ -36,6 +36,7 @@ From the control planes distribution point of view, the following list includes 
 - 1 Control Plane for application traffic
 
 ![](./images/RHMesh_MCP_Simple.png "Red Hat Service Mesh Multiple Control Planes Architecture - Simple")
+
 ### Multiple Control Planes Architecture - High Availability
 
 When critical workloads are running in a cluster and it is essential to avoid possible service mesh communication issues, it is required to integrate a control plane redundancy solution. In terms of integration, this solution could be named blue/green deployment. 
@@ -57,7 +58,16 @@ The technical implementation is based on multiple projects that are included in 
 - Red Hat Openshift +4.9 (Kubernetes)
 - Red Hat Service Mesh +2.1 (Istio)
 
-Please visit [Setting Up document](./docs/setting_up.md) for more information about deploying this solution.
+The idea of this implementation is to deploy the simplest multi control planes based Red Hat Service Mesh solution with the idea of start working on this kind of solutions. This solution includes 3 control planes:
+
+- Ingress Control Plane
+- Workload Control Plane
+- Egress Control Plane
+
+Once the different control planes are installed successfully, it is time to configure all Red Hat Service Mesh object in order to define the connectivity rules.
+
+Please visit [Setting Up document](./docs/setting_up.md) for more information about the solution design and the procedure to deploy the mesh easily.
+
 ## Author
 
 Asier Cidon @RedHat
