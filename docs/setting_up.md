@@ -1,4 +1,4 @@
-# Setting Up Red Hat Service Mesh Multiple Control Planes Architecture
+#  Red Hat Service Mesh Multiple Control Planes Architecture Design & Implementation
 
 This page tries to collect basic information and a set of procedures to deploy and configure multiple control planes based Red Hat Service Mesh solution.
 

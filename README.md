@@ -51,14 +51,14 @@ The idea is to make the changes and executes update procedures with the possibil
 
 ![](./images/RHMesh_MCP_HA.png "Red Hat Service Mesh Multiple Control Planes Architecture - HA")
 
-## Setting Up
+## Architecture Design & Implementation
 
 The technical implementation is based on multiple projects that are included in the following list:
 
 - Red Hat Openshift +4.9 (Kubernetes)
 - Red Hat Service Mesh +2.1 (Istio)
 
-The idea of this implementation is to deploy the simplest multi control planes based Red Hat Service Mesh solution with the idea of start working on this kind of solutions. This solution includes 3 control planes:
+In terms of the technical design, the idea of this implementation is to deploy the simplest multi control planes based Red Hat Service Mesh solution with the idea of start working on this kind of solutions. This solution includes 3 control planes:
 
 - Ingress Control Plane
 - Workload Control Plane
@@ -66,7 +66,7 @@ The idea of this implementation is to deploy the simplest multi control planes b
 
 Once the different control planes are installed successfully, it is time to configure all Red Hat Service Mesh object in order to define the connectivity rules.
 
-Please visit [Setting Up document](./docs/setting_up.md) for more information about the solution design and the procedure to deploy the mesh easily.
+Please visit [Architecture Design & Implementation](./docs/setting_up.md) for more information about the solution design and the procedure to deploy the mesh easily.
 
 ## Author
 
