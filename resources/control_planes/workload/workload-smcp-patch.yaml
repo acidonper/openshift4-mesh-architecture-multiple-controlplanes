@@ -1,0 +1,18 @@
+spec:
+  gateways:
+    ingress:
+      volumes:
+      - volume:
+          secret:
+            secretName: istio-mtls-cp-secret
+        volumeMount:
+          mountPath: /etc/istio/mtls-certs
+          name: istio-mtls-cp-secret
+    egress:
+      volumes:
+      - volume:
+          secret:
+            secretName: istio-mtls-cp-secret
+        volumeMount:
+          mountPath: /etc/istio/mtls-certs
+          name: istio-mtls-cp-secret

@@ -1,0 +1,107 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: google
+  namespace: jump-app-dev
+spec:
+  exportTo:
+  - "."
+  gateways:
+  - mesh
+  hosts:
+  - www.google.com
+  http:
+  - route:
+      - destination:
+          host: istio-egressgateway.mesh-workload.svc.cluster.local
+          subset: mtls
+          port:
+            number: 443
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: egress
+  namespace: jump-app-dev
+spec:
+  exportTo:
+  - "."
+  host: istio-egressgateway.mesh-workload.svc.cluster.local
+  subsets:
+  - name: mtls
+    trafficPolicy:
+      tls:
+        mode: ISTIO_MUTUAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: egress
+  namespace: mesh-workload
+spec:
+  selector:
+    istio: egressgateway
+  servers:
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      hosts:
+      - '*'
+      tls:
+        mode: ISTIO_MUTUAL
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: google
+  namespace: mesh-workload
+spec:
+  exportTo:
+  - "."
+  gateways:
+  - egress
+  hosts:
+  - www.google.com
+  http:
+  - route:
+      - destination:
+          host: istio-ingressgateway.mesh-egress.svc.cluster.local
+          subset: mtls
+          port:
+            number: 443
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: google
+  namespace: mesh-workload
+spec:
+  exportTo:
+  - "."
+  host: istio-ingressgateway.mesh-egress.svc.cluster.local
+  subsets:
+  - name: mtls
+    trafficPolicy:
+      tls:
+        mode: MUTUAL
+        clientCertificate: /etc/istio/mtls-certs/workload.crt
+        privateKey: /etc/istio/mtls-certs/workload.key
+        caCertificates: /etc/istio/mtls-certs/ca-cert.pem
+---
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: egress
+  namespace: mesh-workload
+spec:
+  exportTo:
+  - "."
+  hosts:
+  - istio-ingressgateway.mesh-egress.svc.cluster.local
+  location: MESH_EXTERNAL
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+  resolution: DNS
