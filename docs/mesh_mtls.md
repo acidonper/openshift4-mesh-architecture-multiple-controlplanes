@@ -1,4 +1,4 @@
-# Deploy _Jump App_ Solution (HTTP)
+# Deploy _Jump App_ Solution (Internal mTLS connectivity)
 
 In order to test the global solution including external HTTPs accesses and internal mTLS connections, it is required to deploy an application and integrate it into the service mesh first.
 
