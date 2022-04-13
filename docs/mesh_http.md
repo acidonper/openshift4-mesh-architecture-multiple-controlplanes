@@ -61,10 +61,15 @@ Once the application is deployed and the internal traffic works, it is time to a
 
 Execute the following procedure to configure the required objects in the ingress control plane namespace.
 
-- Deploy _Jump App_ ingress objects
+- Include the required domain for deploying _Jump App_
 
 ```$bash
 sed 's/apps.test.sandbox1196.opentlc.com/<openshift_apps_domain>/g' -i resources/control_planes/ingress/jump-app-http.yaml
+```
+
+- Deploy _Jump App_ ingress objects
+
+```$bash
 oc apply -f resources/control_planes/ingress/jump-app-http.yaml
 ```
 

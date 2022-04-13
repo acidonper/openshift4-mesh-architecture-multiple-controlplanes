@@ -4,11 +4,21 @@ In order to test the global solution including external HTTPs accesses and inter
 
 The following procedures and sections try to deploy _Jump App_ in the application namespace and control ingress and egress traffic through the respective control planes.
 
+## Best Practices
+
+There are multiple _best practices_ for deploying Istio and the connectivity rules in the mesh. In this aspect, the following best practices have been taken into account:
+
+- _export\_to_ - Istio objects are exported in the minimum number of envoys in the _data plane_
+- mTLS - Connectivity in the mesh is protected with encrypted TLS connections and certificate based authentication 
+- Egress Traffic - Connections from workload mesh to external world is routed by an egress gateway (mesh control plane -> egress control plane)
+
 ## Generate Client Certificates
 
 First of all, it is required generate different client certificates in order to be able to make TLS connection between the control planes. For this reason, execute the following procedure.
 
 ```$bash
+sed 's/apps.test.sandbox1196.opentlc.com/<openshift_apps_domain>/g' -i resources/scripts/03-generate-certs.sh
+
 sh resources/scripts/03-generate-certs.sh
 
 ls resources/certs
@@ -80,10 +90,15 @@ Once the application is deployed and the internal traffic works, it is time to a
 
 Execute the following procedure to configure the required objects in the ingress control plane namespace.
 
+- Include the required domain for deploying _Jump App_
+
+```$bash
+sed 's/apps.test.sandbox1196.opentlc.com/<openshift_apps_domain>/g' -i resources/control_planes/ingress/jump-app-mtls.yaml
+```
+
 - Deploy _Jump App_ ingress objects
 
 ```$bash
-sed 's/apps.test.sandbox1196.opentlc.com/<openshift_apps_domain>/g' -i rresources/control_planes/ingress/jump-app-mtls.yaml
 oc apply -f resources/control_planes/ingress/jump-app-mtls.yaml
 ```
 
